@@ -1,0 +1,44 @@
+# tender-writer 的 .gitignore
+# 本 skill 不强制依赖 git,但同事可能在自己的 fork 中用 git 管理。
+# 加这份 .gitignore 避免把环境/缓存/输出/真实素材误提交进版本库。
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# 本地 venv(由 install.bat 创建,体积大且与本机 Python 强相关)
+.venv/
+
+# 工作产物(每次新投标项目都会重新生成,不应进版本库)
+output/
+
+# 测试临时目录(test_regression.py 的临时副本通常在系统 temp,但本地有时会泄漏)
+.pytest_cache/
+*.coverage
+htmlcov/
+
+# 系统残留
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ============================================================
+# 真实素材目录(.gitignore 不忽略,但提醒主版本回流时务必排除)
+# ============================================================
+# 以下目录在团队主版本中应**保持空骨架**,各团队的真实素材
+# 在自己的 fork 里维护,不要回流到主版本(否则会泄漏商业秘密):
+#
+#   assets/<类别>/<company_id>/  下除 _inbox/.gitkeep / _raw/.gitkeep / 索引文件骨架 之外的所有内容
+#   references/knowledge_base/   下除 README.md / schema.md / 骨架文件 之外的所有 .md
+#   companies.yaml               中除 own_default 之外的所有公司
+#   _inbox_unsorted/             下除 README.md / .gitkeep 之外的所有内容
+#
+# 这些规则没法用 .gitignore 表达,只能靠维护人在回流时手工 review。
