@@ -3,7 +3,8 @@
 # 标书助手 · tender-writer
 
 **一套把"让 AI 写标书"从玩具变成工程的 Claude Skill + 工作流方案**
-**An engineering-grade Claude Skill for Chinese government tender writing**
+
+<sub>An engineering-grade Claude Skill for Chinese government tender writing</sub>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
