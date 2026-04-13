@@ -9,10 +9,10 @@ __pycache__/
 *.so
 
 # 本地 venv(由 install.bat 创建,体积大且与本机 Python 强相关)
-.venv/
+/.venv/
 
 # 工作产物(每次新投标项目都会重新生成,不应进版本库)
-output/
+/output/
 
 # 测试临时目录(test_regression.py 的临时副本通常在系统 temp,但本地有时会泄漏)
 .pytest_cache/
