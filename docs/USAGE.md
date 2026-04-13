@@ -1,77 +1,6 @@
-<div align="center">
+# 完整使用文档
 
-# 标书助手 · tender-writer
-
-**一套把"让 AI 写标书"从玩具变成工程的 Claude Skill + 工作流方案**
-**An engineering-grade Claude Skill for Chinese government tender writing**
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Platform: Windows](https://img.shields.io/badge/Platform-Windows-0078D4.svg)]()
-[![Claude Skills](https://img.shields.io/badge/Claude-Skills-D97757.svg)](https://docs.claude.com)
-[![AI Workflow](https://img.shields.io/badge/Workflow-AI--Assisted-black.svg)]()
-
-</div>
-
----
-
-## 为什么需要这个
-
-写过标书的人都知道一件事:**让 AI 一次性生成整本技术标,结果要么漏答评分点、要么踩到废标条款**。问题不在于 AI 不够聪明,而在于"标书编制"本质上是一个合规问题——它需要严格的流程、可追溯的决策、逐项应答的证据链,而不是一篇漂亮的作文。
-
-tender-writer 把这件事拆成 **5 个必须依次完成、每一步都可以停下来审查的阶段**,让 AI 负责体力活(解析、拆解、组装、核查),把判断权永远留在你手里。
-
-- ✅ **评分办法逐项拆成 CSV 矩阵**,每一分都对应具体应答段落,杜绝漏答
-- ✅ **own / partner / reference 三级素材隔离**,从机制上防止"引用了竞品业绩"这种事故
-- ✅ **全阶段人工确认**,不允许一键生成整本标书
-- ✅ **四种使用方式**:Claude Code(最佳)、Cline/Qwen Code、纯对话 AI、手动模式
-- ✅ **venv 完全隔离**,双击 `install.bat` 即可,不污染系统 Python
-
-## 工作流总览
-
-```mermaid
-flowchart LR
-    A[招标文件<br/>PDF / docx] --> B[阶段 1<br/>解析]
-    B --> B1[tender_brief.md<br/>结构化摘要]
-    B1 --> C[阶段 2<br/>评分矩阵]
-    C --> C1[scoring_matrix.csv<br/>逐分拆解]
-    C1 --> D[阶段 3<br/>提纲反推]
-    D --> D1[outline.md<br/>章节骨架]
-    D1 --> E[阶段 4<br/>分章节撰写]
-    E --> E1[tender_response.docx<br/>主交付物]
-    E1 --> F[阶段 5<br/>合规终审]
-    F --> F1[compliance_report.md<br/>漏答与废标核查]
-
-    style B fill:#FFF4E6,stroke:#D97757
-    style C fill:#FFF4E6,stroke:#D97757
-    style D fill:#FFF4E6,stroke:#D97757
-    style E fill:#FFF4E6,stroke:#D97757
-    style F fill:#FFF4E6,stroke:#D97757
-```
-
-**每个阶段之间必须人工 review 中间产物再推进**——这是整套方案的第一原则,也是它和"一键生成标书"类工具的根本区别。
-
-## 30 秒上手(Claude Code 方式)
-
-```bash
-# 1. 放到项目的 .claude/skills/ 目录下
-git clone https://github.com/Hugin-Z/tender-writer.git .claude/skills/tender-writer
-
-# 2. 双击 install.bat 准备 Python 环境(venv 隔离)
-cd .claude/skills/tender-writer && install.bat
-
-# 3. 在项目根目录启动 Claude Code,把招标文件拖进对话
-claude
-# > "帮我编制 XX 项目的技术标"
-```
-
-Claude Code 会自动加载 `SKILL.md`,按五阶段工作流引导你完成整本标书。其他 AI 工具(Cline / Qwen Code / 纯对话 AI)的使用方式见 [详细文档 →](./docs/USAGE.md)
-
-## 看一眼真实产出
-
-- 📄 [完整示例:一个脱敏的政府采购项目全流程](./examples/demo_project/)
-- 📘 [完整使用文档](./docs/USAGE.md)
-- 📙 [工作流设计哲学](./docs/DESIGN.md)(为什么是 5 个阶段,为什么严禁一键生成)
+> 本文档从 [README](../README.md) 中提取了所有操作性内容,方便日常查阅。项目概览和设计理念请回到 README 或查看 [DESIGN.md](./DESIGN.md)。
 
 ---
 
@@ -218,41 +147,9 @@ python -m unittest discover -s tests -v
 
 - `tests/` 会把整个 `tender-writer/` 复制到系统临时目录后再执行，不会直接改你的正式素材库。
 - 这些临时测试副本在测试结束后会自动删除；即使残留，也可以直接手动删除。
-- 正式目录下的 `tests/` 代码、`output/` 成果和真实 `assets/` 素材不要当成“测试垃圾”直接清掉。
+- 正式目录下的 `tests/` 代码、`output/` 成果和真实 `assets/` 素材不要当成"测试垃圾"直接清掉。
 
 **重要**:这五个阶段必须严格依次进行,每个阶段都要 review 中间产物再推进下一步。这是为了确保最终标书不漏答、不踩雷,**绝不允许跳过或一键生成**。
-
----
-
-## 素材库与知识库
-
-tender-writer 维护两套长期资产,职责完全分开,**不能混用**:
-
-| 维度 | `assets/`(成品素材库) | `references/knowledge_base/`(学习参考库) |
-|---|---|---|
-| 性质 | **可直接抄进标书的原料** | **只能学习风格的参考材料** |
-| 组织方式 | 按"类别 / 公司 id"两级隔离 | 不按公司分目录,但 frontmatter 标注来源公司 |
-| 是否影响标书正文 | ✅ 是,正文中所有具体素材都从这里取 | ❌ 否,只影响 AI 撰写时的结构与话术风格 |
-| 是否允许 reference 公司 | ❌ **严禁**,reference 永远不能进 assets | ✅ 允许(且 reference 类型只能进这里) |
-| review 流程 | 有 pending → approved 流程 | 也有,但宽松,主要看是否吸收为风格参考 |
-
-> 一句话:**能直接抄进标书的放 `assets/`,只能参考风格的放 `references/knowledge_base/`**。
-
----
-
-## 公司归属三类型
-
-所有进入 `assets/` 或 `knowledge_base/` 的素材,都必须在 `companies.yaml` 中注册一个 `company_id`,并标明 `company_type`。三种类型差异巨大:
-
-| 类型 | 定义 | 可用场景 | 严格禁止 |
-| --- | --- | --- | --- |
-| **own** | 我方主体公司(可能多家关联实体) | 资质、业绩、人员、图表、话术均可**直接引用**进标书正文 | 无特殊禁止 |
-| **partner** | 合作方 / 联合体成员 / 分包方 | 仅在联合体投标且招标文件允许时,可引用其素材;**必须**在文中或附件中标注"由 [partner 公司名] 提供" | ❌ 严禁不标注来源就引用 |
-| **reference** | 竞品 / 行业标杆 / 公开案例 | 仅作为学习参考,可吸收其结构、应答策略、话术风格 | ❌ **严禁**任何具体业绩/资质/人员/金额数据进入标书正文;❌ **严禁**进入 `assets/`,只能进 `references/knowledge_base/` |
-
-> 🔴 **reference 是高压线**。即使用户说"这家公司的某段写得很好,抄一下",也必须拒绝。违反就是合规事故。
-
-新增公司请在 Claude Code 中说"新增公司",AI 会引导你完成注册并自动创建对应目录。**不要手动编辑 `companies.yaml`**。
 
 ---
 
@@ -326,65 +223,6 @@ AI 会逐份扫描、生成**分类建议**(目标类别 + 目标公司 + 判断
 
 ---
 
-## 已知局限
-
-1. **只处理技术标**,不处理商务标(报价表、商务条款应答、付款条件等)和价格标。
-2. **只针对中文政府类项目**,英文标书或纯商业项目的国际标不在范围内。
-3. **不替代法务对废标条款的最终判断**。`compliance_check.py` 只是辅助核查,关键废标风险点仍需法务/标书经理人工复核。
-4. PDF 解析依赖 pdfplumber,**扫描件 PDF**(非文字 PDF)无法直接识别,需先 OCR 转换。
-5. 本地化信息(项目所在地的地理、产业、人口等)**必须由用户人工提供或确认**,模型不会编造。
-6. 方式三(纯对话 AI)下,docx 自动排版、覆盖度自动核查、繁简自动转换等依赖 Python 脚本的能力都无法使用。
-7. 素材摄入流程依赖 `extract_text.py` 和 venv,在方式三下也无法自动执行,只能由用户手动整理后让 AI 按 schema 模板填写。
-
----
-
-## 目录结构
-
-```
-tender-writer/
-├── SKILL.md                      ← skill 主入口,Claude Code 会自动加载;其他 AI 也可手动读取
-├── README.md                     ← 你正在看的这份文档
-├── companies.yaml                ← 公司注册表(集中事实来源,所有公司在此登记)
-├── requirements.txt              ← Python 依赖清单
-├── install.bat                   ← 一键环境准备脚本(双击运行)
-├── run_script.bat                ← 通过 venv 调用脚本的入口
-│
-├── references/                   ← 知识参考与学习材料
-│   ├── scoring_dimensions.md     ← 四大评分维度详解
-│   ├── compliance_rules.md       ← 废标风险与合规清单
-│   ├── doc_format_spec.md        ← 中文标书排版规范
-│   ├── phrase_library.md         ← 通用话术骨架
-│   └── knowledge_base/           ← 学习参考材料库(只学风格,不进正文)
-│       ├── 历史标书案例/
-│       ├── 评标专家偏好/
-│       ├── 行业术语对照/
-│       └── 失败教训/
-│
-├── assets/                       ← 可调用成品素材库(按公司隔离)
-│   ├── .ingest_history.json      ← 摄入去重记录
-│   ├── 公司资质/<company_id>/
-│   ├── 类似业绩/<company_id>/
-│   ├── 团队简历/<company_id>/
-│   ├── 通用图表/<company_id>/
-│   └── 标准话术/<company_id>/
-│
-├── _inbox_unsorted/              ← 待分类材料临时区(触发 triage 流程)
-│
-├── scripts/                      ← Python 脚本
-│   ├── parse_tender.py           ← 阶段 1:招标文件解析
-│   ├── build_scoring_matrix.py   ← 阶段 2:评分矩阵构建
-│   ├── compliance_check.py       ← 阶段 5:合规终审
-│   ├── docx_builder.py           ← docx 构建工具模块
-│   └── extract_text.py           ← 通用文本提取(供素材摄入流程调用)
-│
-└── templates/                    ← 输出模板
-    ├── tender_brief.md
-    ├── scoring_matrix.csv
-    └── outline_template.md
-```
-
----
-
 ## 常见问题
 
 - **install.bat 报错**:大概率是 Python 未安装或未加入 PATH。重新装一次 Python 并勾选"Add to PATH"。
@@ -396,10 +234,3 @@ tender-writer/
 - **AI 把 reference 类型的材料写进了 assets**:这是高压线违规,立即停止并要求 AI 撤回,把材料移回 `references/knowledge_base/`。SKILL.md 第三章和第十章已经明确禁止此行为,如果反复发生请反馈给方案维护人。
 
 如有其他问题,联系方案维护人:**laplace.dice@gmail.com**
-
----
-
-## 版本与维护
-
-- 当前版本:v1.1
-- 维护方式:本方案设计为团队内复制分发,任何人都可以在自己副本里改进 references、templates、assets,然后回流到主版本(注意:回流时**不要回流 assets/ 下的具体素材**——那是各团队各自的资产)。

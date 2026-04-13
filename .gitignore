@@ -31,14 +31,15 @@ desktop.ini
 *.swo
 
 # ============================================================
-# 真实素材目录(.gitignore 不忽略,但提醒主版本回流时务必排除)
+# 运行时目录与用户私有数据(公开仓库不追踪)
 # ============================================================
-# 以下目录在团队主版本中应**保持空骨架**,各团队的真实素材
-# 在自己的 fork 里维护,不要回流到主版本(否则会泄漏商业秘密):
-#
-#   assets/<类别>/<company_id>/  下除 _inbox/.gitkeep / _raw/.gitkeep / 索引文件骨架 之外的所有内容
-#   references/knowledge_base/   下除 README.md / schema.md / 骨架文件 之外的所有 .md
-#   companies.yaml               中除 own_default 之外的所有公司
-#   _inbox_unsorted/             下除 README.md / .gitkeep 之外的所有内容
-#
-# 这些规则没法用 .gitignore 表达,只能靠维护人在回流时手工 review。
+
+# 待分类收件箱(运行时目录,仅保留 .gitkeep 占位)
+_inbox_unsorted/*
+!_inbox_unsorted/.gitkeep
+
+# 素材库中的公司级子目录(用户私有数据,clone 后由用户自行填充)
+assets/*/*/
+
+# 素材摄入去重记录(运行时数据)
+assets/.ingest_history.json
