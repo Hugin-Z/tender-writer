@@ -13,7 +13,8 @@
 [![AI Workflow](https://img.shields.io/badge/Workflow-AI--Assisted-black.svg)]()
 
 </div>
-
+> ⚠️ **此仓库为 v1 版本，已被 v3.0.0 取代**。
+> 当前活跃开发：[Hugin-Z/tender-writer-v3](https://github.com/Hugin-Z/tender-writer-v3)
 ---
 
 ## 为什么需要这个
